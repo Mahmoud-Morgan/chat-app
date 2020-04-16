@@ -18,11 +18,11 @@ Route::get('/', function () {
 });
 Route::group(['middleware' => 'auth'], function () {
 
-
+Route::get('/chat', 'ChatController@index')->name('home');
 Route::get('/test', function () {
     return view('test');
 });
 
-//Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');
 
 });

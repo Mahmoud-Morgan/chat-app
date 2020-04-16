@@ -18,8 +18,9 @@ class CreateUsersTable extends Migration
             $table->string('name')->unique();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable();;
             $table->string('photo')->default('https://randomuser.me/api/portraits/thumb/men/75.jpg');
+           
             $table->rememberToken();
             $table->timestamps();
         });

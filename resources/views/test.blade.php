@@ -6,11 +6,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{{--   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> --}}
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <link href="{{ asset('css/chat_form.css') }}" rel="stylesheet">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{{--   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> --}}
 </head>
 <body>
 
@@ -28,8 +29,9 @@
       </div>
     </div>
     </div>
+    
     <div class="inbox_chat scroll">
-    <div class="chat_list active_chat">
+{{--     <div class="chat_list active_chat">
       <div class="chat_people">
       <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
       <div class="chat_ib">
@@ -39,56 +41,7 @@
       </div>
       </div>
     </div>
-    <div class="chat_list">
-      <div class="chat_people">
-      <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-      <div class="chat_ib">
-        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-        <p>Test, which is a new approach to have all solutions 
-        astrology under one roof.</p>
-      </div>
-      </div>
-    </div>
-    <div class="chat_list">
-      <div class="chat_people">
-      <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-      <div class="chat_ib">
-        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-        <p>Test, which is a new approach to have all solutions 
-        astrology under one roof.</p>
-      </div>
-      </div>
-    </div>
-    <div class="chat_list">
-      <div class="chat_people">
-      <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-      <div class="chat_ib">
-        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-        <p>Test, which is a new approach to have all solutions 
-        astrology under one roof.</p>
-      </div>
-      </div>
-    </div>
-    <div class="chat_list">
-      <div class="chat_people">
-      <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-      <div class="chat_ib">
-        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-        <p>Test, which is a new approach to have all solutions 
-        astrology under one roof.</p>
-      </div>
-      </div>
-    </div>
-    <div class="chat_list">
-      <div class="chat_people">
-      <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-      <div class="chat_ib">
-        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-        <p>Test, which is a new approach to have all solutions 
-        astrology under one roof.</p>
-      </div>
-      </div>
-    </div>
+  --}}
     <div class="chat_list">
       <div class="chat_people">
       <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>

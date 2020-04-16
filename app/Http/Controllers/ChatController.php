@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Message;
 use App\BadWord;
+use Auth;
 
 class ChatController extends Controller
 {
@@ -19,7 +20,9 @@ class ChatController extends Controller
         //
         $data['current_user']= Auth::user();
         $data['users']= User::all()->sortBy('name');
-        return view('user.users_list',$data);
+        $data['messages']=null;
+        $data['other_user']=null;
+        return view('user.chat',$data);
     }
 
     /**
@@ -42,7 +45,7 @@ class ChatController extends Controller
     public function store(Request $request)
     {
         //
-         $request->validate([ 'message' => 'required',
+         $request->validate([ 'body' => 'required',
          'user_sender_id'               => 'required',
          'user_reciver_id'              => 'required',
          ]);
@@ -50,9 +53,10 @@ class ChatController extends Controller
          $massege = new Message();
          $massege->user_sender_id = $request->user_sender_id;
          $message->user_reciver_id = $request->user_reciver_id;
-         $message->message = $request->message;
+         $message->body = $request->body;
          $message->save();
-         return redirect()->action('ChatController@show',$massege->user_sender_id,$message->user_reciver_id);
+         return $messages->toJson();
+         // return redirect()->action('ChatController@show',$massege->user_sender_id,$message->user_reciver_id);
 
 
     }
@@ -66,9 +70,11 @@ class ChatController extends Controller
     public function show($id1,$id2)
     {
         //
-        $where = array('user_sender_id' => $id1,'user_reciver_id'=>$id2);
-        $data['masseges']= Message::where($where)->get()->sortBy('created_at');
-        return view('user.chat',$data);
+        $where1 = array('user_sender_id' => $id1,'user_reciver_id'=>$id2);
+        $where2 = array('user_sender_id' => $id2,'user_reciver_id'=>$id1);
+        $data['messages']= Message::where($where1)->orwhere($where2)->latest()->get();
+        $data['other_user'] = User::find($id2);
+        return response()->json($data);
     }
 
     /**
