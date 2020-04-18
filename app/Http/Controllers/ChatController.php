@@ -72,7 +72,7 @@ class ChatController extends Controller
         //
         $where1 = array('user_sender_id' => $id1,'user_reciver_id'=>$id2);
         $where2 = array('user_sender_id' => $id2,'user_reciver_id'=>$id1);
-        $data['messages']= Message::where($where1)->orwhere($where2)->latest()->get();
+        $data['messages']= Message::where($where1)->orwhere($where2)->get();
         $data['other_user'] = User::find($id2);
         return response()->json($data);
     }

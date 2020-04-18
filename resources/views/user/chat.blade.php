@@ -8,6 +8,7 @@
   
 {{--   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> --}}
+  <script src="{{ asset('js/app.js') }}"></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <link href="{{ asset('css/chat_form.css') }}" rel="stylesheet">
 {{--   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -60,14 +61,15 @@
 
 
   <!-- {{-- right section --}} -->
-  <div class="mesgs">
-    <div class="msg_history" v-for="message in messages">
-      <div v-if="message.user_sender_id != current_user.id">
+  <div class="mesgs" >
+    <div class="msg_history" id="mesgs" >
+      <div id ="mesgs" v-for="message  in messages">
+      <div v-if="message.user_sender_id != user.id">
          <div class="incoming_msg">
-         <div class="incoming_msg_img">{{--  <img src="@{{other_user.photo}}" alt="sunil">  --}}</div>
+         <div class="incoming_msg_img"> {{-- <img src= "@{{other_user.photo}}" --}} alt="sunil"> </div>
         <div class="received_msg">
         <div class="received_withd_msg">
-          <p>@{{message.body}}</p>
+          <p>body @{{message.body}}</p>
           <span class="time_date"> @{{message.created_at}}</span></div>
         </div>
       </div>
@@ -80,7 +82,7 @@
           <span class="time_date">@{{message.created_at}}</span> </div>
         </div>
         </div>
-
+     </div>
     </div>
 
      {{-- typing message area --}}
@@ -97,35 +99,36 @@
 </body>
 </html>
 
-<script src="{{ asset('js/app.js') }}"></script>
+
 <script type="text/javascript">
 
 
     const app = new Vue({
-      el: '#app',
-      data: {
+      el: '#mesgs',
 
-        messages: {},
+      data () { 
+        return{
+        messages:{},
         newMessage: '',
-        user: {!! Auth::check() ? Auth::user()->toJson() : 'null' !!}},
-        //api_token: this.user.api_token,
-
+        user: {!! Auth::check() ? Auth::user()->toJson() : 'null' !!},
+      }
+      },
       mounted() {
-         //this.getMessages();
+        // this.getMessages();
         //this.listen();
-        console.log(this.user.api_token);
+        //console.log(this.user.api_token);
       },
       methods: {
-        getMessages(other_user_id) {
+        getMessages: function (other_user_id) {
           axios.get('/api/messages/'+this.user.id+'/'+other_user_id,{
             headers: { 'Authorization' : 'Bearer '+ this.user.api_token}
                  })
                 .then((response) => {
-                  //this.messages = response.data.messages
-                  console.log(response.data.messages)
-                .catch(function (error) {
-                  console.log(error);  });   
-                })
+                  this.messages=response.data.messages;
+                  console.log(this.messages);
+                // .catch(function (error) {
+                //   console.log(error);  });   
+                });
         },
 
         check(id){
