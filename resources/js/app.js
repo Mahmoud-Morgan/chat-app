@@ -5,6 +5,7 @@
  */
 
 require('./bootstrap');
+require('moment/moment.js');
 
 window.Vue = require('vue');
 
@@ -29,4 +30,13 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
+});
+//const moment = require('moment')
+
+import moment from 'moment';
+
+Vue.filter('formatDate', function(value) {
+    if (value) {
+        return moment(String(value)).format('MM/DD/YYYY hh:mm')
+    }
 });

@@ -66,11 +66,11 @@
       <div id ="mesgs" v-for="message  in messages">
       <div v-if="message.user_sender_id != user.id">
          <div class="incoming_msg">
-         <div class="incoming_msg_img"> {{-- <img src= "@{{other_user.photo}}" --}} alt="sunil"> </div>
+         <div class="incoming_msg_img"> <img v-bind:src= "other_user.photo" alt="sunil"> </div>
         <div class="received_msg">
         <div class="received_withd_msg">
           <p>body @{{message.body}}</p>
-          <span class="time_date"> @{{message.created_at}}</span></div>
+          <span class="time_date"> @{{message.created_at | formatDate }}</span></div>
         </div>
       </div>
     </div>
@@ -79,7 +79,7 @@
         <div class="outgoing_msg">
           <div class="sent_msg">
           <p>@{{message.body}}</p>
-          <span class="time_date">@{{message.created_at}}</span> </div>
+          <span class="time_date">@{{message.created_at| formatDate }}</span> </div>
         </div>
         </div>
      </div>
@@ -88,8 +88,8 @@
      {{-- typing message area --}}
     <div class="type_msg">
     <div class="input_msg_write">
-      <input type="text" class="write_msg" placeholder="Type a message" />
-      <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+      <input type="text" class="write_msg" v-model="newMessage" placeholder="Type a message" />
+      <button class="msg_send_btn" type="button" @click.prevent="sendMessage"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
     </div>
     </div>
   </div>
@@ -104,12 +104,13 @@
 
 
     const app = new Vue({
-      el: '#mesgs',
+      el: '#app',
 
       data () { 
         return{
         messages:{},
-        newMessage: '',
+        newMessage: 'newMessage',
+        other_user: '',
         user: {!! Auth::check() ? Auth::user()->toJson() : 'null' !!},
       }
       },
@@ -117,6 +118,7 @@
         // this.getMessages();
         //this.listen();
         //console.log(this.user.api_token);
+        //this.sendMessage();
       },
       methods: {
         getMessages: function (other_user_id) {
@@ -125,10 +127,24 @@
                  })
                 .then((response) => {
                   this.messages=response.data.messages;
+                  this.other_user=response.data.other_user;
+                  
                   console.log(this.messages);
                 // .catch(function (error) {
                 //   console.log(error);  });   
                 });
+        },
+        sendMessage(){
+          axios.post('/api/messages/newmessage',{  
+            api_token:this.user.api_token,
+            body :this.newMessage,
+            user_sender_id : this.user.id,
+            user_reciver_id :this.other_user.id,
+                 })
+          .then((response) => {
+            this.messages.push(response.data);
+            this.newMessage='';
+          });
         },
 
         check(id){

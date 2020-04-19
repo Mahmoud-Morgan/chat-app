@@ -19,4 +19,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::middleware('auth:api')->group(function () {
     Route::get('/messages/{id1}/{id2}', 'ChatController@show');
+    Route::post('/messages/newmessage', 'ChatController@store');
 });

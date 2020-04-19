@@ -45,17 +45,22 @@ class ChatController extends Controller
     public function store(Request $request)
     {
         //
+
+        //$request=json_decode($request);
+      //   $x='ppp';
+      // return $request->user_sender_id;
          $request->validate([ 'body' => 'required',
          'user_sender_id'               => 'required',
          'user_reciver_id'              => 'required',
          ]);
+         // return  response()->json($request);
 
-         $massege = new Message();
-         $massege->user_sender_id = $request->user_sender_id;
+         $message = new Message();
+         $message->user_sender_id = $request->user_sender_id;
          $message->user_reciver_id = $request->user_reciver_id;
          $message->body = $request->body;
          $message->save();
-         return $messages->toJson();
+         return  response()->json($message);
          // return redirect()->action('ChatController@show',$massege->user_sender_id,$message->user_reciver_id);
 
 
