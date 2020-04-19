@@ -45,7 +45,7 @@
     </div> -->
   
   @foreach($users as $user)
-    <div class="chat_list">
+    <div class="chat_list ">
       <div class="chat_people" value="{{$user->id}}">
       <div class="chat_img"> <img src="{{$user->photo}}" alt="sunil"> </div>
       <div class="chat_ib">
@@ -62,6 +62,14 @@
 
   <!-- {{-- right section --}} -->
   <div class="mesgs" >
+    <div class="media" style="border-bottom: 1px solid #B7BFBC;height: 50px;margin-bottom: 15px;" >
+      <span class="media-left">
+      <img width="45" v-bind:src= "other_user.photo" alt="sunil">
+      </span>
+      <div class="media-body" style="padding: 10px ;">
+      <h2  >@{{other_user.name}}</h2>
+    </div>
+    </div>
     <div class="msg_history" id="mesgs" >
       <div id ="mesgs" v-for="message  in messages">
       <div v-if="message.user_sender_id != user.id">
@@ -89,7 +97,7 @@
     <div class="type_msg">
     <div class="input_msg_write">
       <input type="text" class="write_msg" v-model="newMessage" placeholder="Type a message" />
-      <button class="msg_send_btn" type="button" @click.prevent="sendMessage"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+      <button class="msg_send_btn" type="button" @click.prevent="sendMessage"><i class="fa fa-send-o" aria-hidden="true"></i></button>
     </div>
     </div>
   </div>
@@ -109,7 +117,7 @@
       data () { 
         return{
         messages:{},
-        newMessage: 'newMessage',
+        newMessage: '',
         other_user: '',
         user: {!! Auth::check() ? Auth::user()->toJson() : 'null' !!},
       }
@@ -121,7 +129,7 @@
         //this.sendMessage();
       },
       methods: {
-        getMessages: function (other_user_id) {
+        getMessages: function (other_user_id,item) {
           axios.get('/api/messages/'+this.user.id+'/'+other_user_id,{
             headers: { 'Authorization' : 'Bearer '+ this.user.api_token}
                  })
@@ -133,6 +141,9 @@
                 // .catch(function (error) {
                 //   console.log(error);  });   
                 });
+          document.querySelectorAll('.chat_people').forEach(div => {
+          div.parentElement.setAttribute('class','chat_list')})
+          item.parentElement.setAttribute('class','chat_list active_chat');
         },
         sendMessage(){
           axios.post('/api/messages/newmessage',{  
@@ -154,14 +165,12 @@
       },
     });
 
-  // const select_user= document.getElementsByClassName('chat_people').getAttribute('value');
-  // console.log(select_user);
-  //select_user.forEach(div =>{div.addEventListener('click',()=>{ alert("ok")})});
-  // select_user.forEach(div =>{div.addEventListener('click',()=>{ alert( var id2= div.getAttribute('value'))})}) 
-  //app.getMessages(item.getAttribute('value')
+
 document.querySelectorAll('.chat_people').forEach(item => {
   item.addEventListener('click', event => {
-    app.getMessages(item.getAttribute('value'));
+    app.getMessages(item.getAttribute('value'),item);
+
+
   });});
 
 </script>
