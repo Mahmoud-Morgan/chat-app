@@ -5,14 +5,11 @@
   <title>Bootstrap Example</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-{{--   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> --}}
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <script src="{{ asset('js/app.js') }}"></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <link href="{{ asset('css/chat_form.css') }}" rel="stylesheet">
-{{--   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> --}}
+
 </head>
 <body>
 
@@ -33,16 +30,6 @@
     </div>
     
     <div class="inbox_chat scroll">
-<!--     <div class="chat_list active_chat">
-      <div class="chat_people">
-      <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
-      <div class="chat_ib">
-        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-        <p>Test, which is a new approach to have all solutions 
-        astrology under one roof.</p>
-      </div>
-      </div>
-    </div> -->
   
   @foreach($users as $user)
     <div class="chat_list ">
@@ -64,7 +51,7 @@
   <div class="mesgs" >
     <div class="media" style="border-bottom: 1px solid #B7BFBC;height: 50px;margin-bottom: 15px;" >
       <span class="media-left">
-      <img width="45" v-bind:src= "other_user.photo" alt="sunil">
+      <img width="45" v-bind:src= "other_user.photo" alt="Select user">
       </span>
       <div class="media-body" style="padding: 10px ;">
       <h2  >@{{other_user.name}}</h2>
@@ -77,7 +64,7 @@
          <div class="incoming_msg_img"> <img v-bind:src= "other_user.photo" alt="sunil"> </div>
         <div class="received_msg">
         <div class="received_withd_msg">
-          <p>body @{{message.body}}</p>
+          <p>@{{message.body}}</p>
           <span class="time_date"> @{{message.created_at | formatDate }}</span></div>
         </div>
       </div>
@@ -104,8 +91,7 @@
   </div>
 </div>
 
-</body>
-</html>
+
 
 
 <script type="text/javascript">
@@ -119,6 +105,7 @@
         messages:{},
         newMessage: '',
         other_user: '',
+        channel_id:'',
         user: {!! Auth::check() ? Auth::user()->toJson() : 'null' !!},
       }
       },
@@ -136,8 +123,9 @@
                 .then((response) => {
                   this.messages=response.data.messages;
                   this.other_user=response.data.other_user;
-                  
-                  console.log(this.messages);
+                  this.channel_id=response.data.channel_id;
+                  console.log(this.channel_id);
+                  this.listen();
                 // .catch(function (error) {
                 //   console.log(error);  });   
                 });
@@ -158,6 +146,15 @@
           });
         },
 
+        listen() {
+        Echo.private('chat.'+this.channel_id)
+            .listen('NewMessage', (e) => {
+              //this.messages.push(message);
+              console.log(e.message);
+              this.messages.push(e.message);
+            });
+         },
+
         check(id){
           console.log(id);
         }
@@ -170,7 +167,8 @@ document.querySelectorAll('.chat_people').forEach(item => {
   item.addEventListener('click', event => {
     app.getMessages(item.getAttribute('value'),item);
 
-
   });});
 
 </script>
+</body>
+</html>
