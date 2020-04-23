@@ -23,7 +23,8 @@
           <div class="chat_people" value="{{$user->id}}">
           <div class="chat_img"> <img src="{{$user->photo}}" alt="sunil"> </div>
           <div class="chat_ib">
-            <h5>{{$user->name}} <span class="chat_date" v-if="onlineUser[{{$user->id}}]"
+            <h5>{{$user->name}} <span class="chat_date" 
+              v-if="onlineUser[{{$user->id}}]"
               >online</span></h5>
             
           </div>
