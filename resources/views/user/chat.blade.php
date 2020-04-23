@@ -1,22 +1,10 @@
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Bootstrap Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <script src="{{ asset('js/app.js') }}"></script>
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-  <link href="{{ asset('css/chat_form.css') }}" rel="stylesheet">
-
-</head>
-<body>
-
-<div class="messaging" id="app">
+@extends('layouts.app')
+@section('content')
+<div class="messaging" >
   <div class="inbox_msg">
     <!-- {{-- left section --}} -->
-  <div class="inbox_people">
+   <div class="inbox_people">
     <h3></h3><p>welcome <strong>{{$current_user->name}}</strong></p> </h3>
     <div class="headind_srch">
     <div class="recent_heading">
@@ -30,25 +18,24 @@
     </div>
     
     <div class="inbox_chat scroll">
-  
-  @foreach($users as $user)
-    <div class="chat_list ">
-      <div class="chat_people" value="{{$user->id}}">
-      <div class="chat_img"> <img src="{{$user->photo}}" alt="sunil"> </div>
-      <div class="chat_ib">
-        <h5>{{$user->name}} <span class="chat_date">Dec 25</span></h5>
-        <p>Test, which is a new approach to have all solutions 
-        astrology under one roof.</p>
-      </div>
-      </div>
-    </div> 
-  @endforeach
+      @foreach($users as $user)
+        <div class="chat_list ">
+          <div class="chat_people" value="{{$user->id}}">
+          <div class="chat_img"> <img src="{{$user->photo}}" alt="sunil"> </div>
+          <div class="chat_ib">
+            <h5>{{$user->name}} <span class="chat_date">Dec 25</span></h5>
+            <p>Test, which is a new approach to have all solutions 
+            astrology under one roof.</p>
+          </div>
+          </div>
+        </div> 
+      @endforeach
     </div>
-  </div>
+   </div>
 
 
-  <!-- {{-- right section --}} -->
-  <div class="mesgs" >
+   <!-- {{-- right section --}} -->
+   <div class="mesgs" >
     <div class="media" style="border-bottom: 1px solid #B7BFBC;height: 50px;margin-bottom: 15px;" >
       <span class="media-left">
       <img width="45" v-bind:src= "other_user.photo" alt="Select user">
@@ -57,7 +44,7 @@
       <h2  >@{{other_user.name}}</h2>
     </div>
     </div>
-    <div class="msg_history" id="mesgs" >
+    <div class="msg_history" id="mesgs" v-chat-scroll>
       <div id ="mesgs" v-for="message  in messages">
       <div v-if="message.user_sender_id != user.id">
          <div class="incoming_msg">
@@ -82,18 +69,18 @@
 
      {{-- typing message area --}}
     <div class="type_msg">
-    <div class="input_msg_write">
-      <input type="text" class="write_msg" v-model="newMessage" placeholder="Type a message" />
-      <button class="msg_send_btn" type="button" @click.prevent="sendMessage"><i class="fa fa-send-o" aria-hidden="true"></i></button>
+      <div class="input_msg_write">
+        <input type="text" class="write_msg" v-model="newMessage" placeholder="Type a message" />
+        <button class="msg_send_btn" type="button" @click.prevent="sendMessage"><i class="fa fa-send-o" aria-hidden="true"></i></button>
+      </div>
     </div>
-    </div>
-  </div>
+   </div>
   </div>
 </div>
+@endsection
 
 
-
-
+@section('script')
 <script type="text/javascript">
 
 
@@ -106,6 +93,7 @@
         newMessage: '',
         other_user: '',
         channel_id:'',
+        onlineChannel:'',
         user: {!! Auth::check() ? Auth::user()->toJson() : 'null' !!},
       }
       },
@@ -113,7 +101,9 @@
         // this.getMessages();
         //this.listen();
         //console.log(this.user.api_token);
-        //this.sendMessage();
+       //this.joinOnline();
+        //this.getOnlineUsers();
+
       },
       methods: {
         getMessages: function (other_user_id,item) {
@@ -147,13 +137,25 @@
         },
 
         listen() {
-        Echo.private('chat.'+this.channel_id)
+         Echo.private('chat.'+this.channel_id)
             .listen('NewMessage', (e) => {
               //this.messages.push(message);
               console.log(e.message);
               this.messages.push(e.message);
-            });
+          });
          },
+
+        joinOnline(){
+          this.onlineChannel = Echo.join('online');
+        },
+        getOnlineUsers (){
+         axios.GET ('/apps/:12345678/channels/:online/users',{
+            headers: { 'Authorization' : 'Bearer '+ this.user.api_token}
+                 })
+         .then((response) => {
+          console.log(response);});
+         //this.onlineChannel.members
+        },
 
         check(id){
           console.log(id);
@@ -170,5 +172,4 @@ document.querySelectorAll('.chat_people').forEach(item => {
   });});
 
 </script>
-</body>
-</html>
+@endsection
