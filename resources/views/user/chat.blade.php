@@ -23,9 +23,9 @@
           <div class="chat_people" value="{{$user->id}}">
           <div class="chat_img"> <img src="{{$user->photo}}" alt="sunil"> </div>
           <div class="chat_ib">
-            <h5>{{$user->name}} <span class="chat_date">Dec 25</span></h5>
-            <p>Test, which is a new approach to have all solutions 
-            astrology under one roof.</p>
+            <h5>{{$user->name}} <span class="chat_date" v-if="onlineUser[{{$user->id}}]"
+              >online</span></h5>
+            
           </div>
           </div>
         </div> 
@@ -70,8 +70,12 @@
      {{-- typing message area --}}
     <div class="type_msg">
       <div class="input_msg_write">
-        <input type="text" class="write_msg" v-model="newMessage" placeholder="Type a message" />
-        <button class="msg_send_btn" type="button" @click.prevent="sendMessage"><i class="fa fa-send-o" aria-hidden="true"></i></button>
+        <span v-if="activeUser">@{{activeUser}} is typing ...</span>
+        <input type="text" class="write_msg" v-model="newMessage" placeholder="Type a message" 
+        @keydown = "isTyping" @keyup.enter="sendMessage"/>
+        
+        <button class="msg_send_btn" type="button" @click.prevent="sendMessage" 
+         ><i class="fa fa-send-o" aria-hidden="true"></i></button>
       </div>
     </div>
    </div>
@@ -92,8 +96,10 @@
         messages:{},
         newMessage: '',
         other_user: '',
+        activeUser:false,
+        typingTimer:false,
         channel_id:'',
-        onlineChannel:'',
+        onlineUser:[],
         user: {!! Auth::check() ? Auth::user()->toJson() : 'null' !!},
       }
       },
@@ -101,7 +107,7 @@
         // this.getMessages();
         //this.listen();
         //console.log(this.user.api_token);
-       //this.joinOnline();
+       this.joinOnline();
         //this.getOnlineUsers();
 
       },
@@ -142,24 +148,52 @@
               //this.messages.push(message);
               console.log(e.message);
               this.messages.push(e.message);
+          })
+          .listenForWhisper('typing',(response)=>{
+            console.log('typing');
+            console.log(response);
+            this.activeUser=this.other_user.name;
+            // to avoid flashing "typing message"
+            if(this.typingTimer){
+              clearTimeout(this.typingTimer);
+            }
+            this.typingTimer= setTimeout(()=>{
+              this.activeUser=false;
+            },3000);
           });
-         },
+        },
+        isTyping() {
+           Echo.private('chat.'+this.channel_id)
+          .whisper('typing','');
+       
+        },
 
         joinOnline(){
-          this.onlineChannel = Echo.join('online');
+          console.log("ok1");
+           Echo.join('online')
+           .here((users) =>{
+                //
+                users.map((user)=>{
+                  this.onlineUser[(user.name)]=true;
+                });                
+            })
+            .joining((user) => {
+                this.onlineUser[(user.name)]=true;
+            })
+            .leaving((user) => {
+                this.onlineUser[(user.name)]=false;
+                console.log("user"+user.name+"leaving");
+            });
         },
-        getOnlineUsers (){
-         axios.GET ('/apps/:12345678/channels/:online/users',{
-            headers: { 'Authorization' : 'Bearer '+ this.user.api_token}
-                 })
-         .then((response) => {
-          console.log(response);});
-         //this.onlineChannel.members
-        },
+        // getOnlineUsers (){
+        //  axios.GET ('/apps/:12345678/channels/:online/users',{
+        //     headers: { 'Authorization' : 'Bearer '+ this.user.api_token}
+        //          })
+        //  .then((response) => {
+        //   console.log(response);});
+        //  //this.onlineChannel.members
+        // },
 
-        check(id){
-          console.log(id);
-        }
 
       },
     });

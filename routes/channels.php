@@ -25,3 +25,7 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('chat.{id}', function ($user) {
   return Auth::check();
 });
+Broadcast::channel('online', function ($user) {
+  if(Auth::check()){return array('name' => $user->id);}
+  
+});
