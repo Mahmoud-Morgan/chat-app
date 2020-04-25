@@ -66,12 +66,14 @@
         </div>
         </div>
      </div>
-    </div>
 
+    </div>
+    <span v-if="activeUser">@{{activeUser}} is typing ...</span>
      {{-- typing message area --}}
     <div class="type_msg">
+      
       <div class="input_msg_write">
-        <span v-if="activeUser">@{{activeUser}} is typing ...</span>
+        
         <input type="text" class="write_msg" v-model="newMessage" placeholder="Type a message" 
         @keydown = "isTyping" @keyup.enter="sendMessage"/>
         
@@ -92,8 +94,8 @@
     const app = new Vue({
       el: '#app',
 
-      data () { 
-        return{
+      data : { 
+        
         messages:{},
         newMessage: '',
         other_user: '',
@@ -102,7 +104,7 @@
         channel_id:'',
         onlineUser:[],
         user: {!! Auth::check() ? Auth::user()->toJson() : 'null' !!},
-      }
+      
       },
       mounted() {
         // this.getMessages();
