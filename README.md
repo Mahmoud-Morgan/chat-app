@@ -5,6 +5,6 @@
 
 ### Features 
 
-- real-time chat
+- one to one real-time chat
 - show active users 
 - chat typing indicator 
