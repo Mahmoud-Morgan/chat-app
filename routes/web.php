@@ -18,6 +18,5 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/', 'ChatController@index')->name('home');
 
-    Route::get('/home', 'HomeController@index')->name('home');
 
 });
