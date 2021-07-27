@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Message;
 use App\BadWord;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use App\Events\NewMessage;
 
 
@@ -55,7 +55,7 @@ class ChatController extends Controller
          'user_sender_id'               => 'required',
          'user_reciver_id'              => 'required',
          ]);
-         
+
 
          $message = new Message();
          $message->user_sender_id = $request->user_sender_id;
@@ -127,7 +127,7 @@ class ChatController extends Controller
     /**
      * Calculate a unique integer based on two integers (cantor pairing).
      * should be one unique integer based on sender ID - reciver ID and vis versal.
-     * we cant depend on the arange cause the sender can be a reciver , then it will handeled as new channel. 
+     * we cant depend on the arange cause the sender can be a reciver , then it will handeled as new channel.
      */
     public function getChannelID($x,$y)
     {
